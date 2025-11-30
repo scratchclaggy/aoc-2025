@@ -1,4 +1,4 @@
-class Day01 {
+class Day04 {
     companion object {
         private fun part1(input: List<String>): Int = input.size
 
@@ -8,9 +8,10 @@ class Day01 {
             check(part1(listOf("test_input")) == 1)
             check(part2(listOf("test_input")) == 1)
 
-            val input = readInput("Day01")
+            val input = readInput("Day04")
             part1(input).println()
             part2(input).println()
         }
     }
 }
+

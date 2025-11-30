@@ -1,5 +1,18 @@
 plugins {
     kotlin("jvm") version "2.2.21"
+    application
+}
+
+kotlin {
+    jvmToolchain(21)
+}
+
+application {
+    mainClass = "HandlerKt"
+}
+
+repositories {
+    mavenCentral()
 }
 
 sourceSets {
