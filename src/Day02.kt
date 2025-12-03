@@ -1,26 +1,24 @@
 class Day02 {
   companion object {
     private fun part1(input: String) =
-        input.split(",").sumOf {
-          """(\d+)-(\d+)"""
-              .toRegex()
-              .matchEntire(it)
-              ?.destructured
-              ?.let { (a, b) -> a.toLong()..b.toLong() }
-              ?.filter { """(\d+)\1""".toRegex().matches(it.toString()) }
-              ?.sum() ?: throw Error()
-        }
+        input
+            .split(",")
+            .flatMap {
+              it.split("-")
+                  .let { (a, b) -> a.toLong()..b.toLong() }
+                  .filter { """(\d+)\1""".toRegex().matches(it.toString()) }
+            }
+            .sum()
 
     private fun part2(input: String) =
-        input.split(",").sumOf {
-          """(\d+)-(\d+)"""
-              .toRegex()
-              .matchEntire(it)
-              ?.destructured
-              ?.let { (a, b) -> a.toLong()..b.toLong() }
-              ?.filter { """(\d+)\1+""".toRegex().matches(it.toString()) }
-              ?.sum() ?: throw Error()
-        }
+        input
+            .split(",")
+            .flatMap {
+              it.split("-")
+                  .let { (a, b) -> a.toLong()..b.toLong() }
+                  .filter { """(\d+)\1+""".toRegex().matches(it.toString()) }
+            }
+            .sum()
 
     fun solve() {
       val testInput = readInput("Day02_Test").first()
