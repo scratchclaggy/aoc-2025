@@ -1,47 +1,32 @@
 import kotlin.io.path.Path
 import kotlin.io.path.readText
-import kotlin.math.max
-import kotlin.math.min
 
 class Day05 {
   companion object {
     private fun parseRanges(input: String) =
-        input.lines().map { it.split("-").map { it.toLong() } }.map { (l, u) -> l to u }
+        input.lines().map { it.split("-").map { it.toLong() } }.map { (l, u) -> l..u }
 
     private fun parseItems(input: String) = input.lines().map { it.toLong() }
 
     private fun parseInput(input: String) =
         input.split("\n\n").let { (r, i) -> parseRanges(r) to parseItems(i) }
 
-    private fun part1(ranges: List<Pair<Long, Long>>, items: List<Long>) =
-        items.count { i -> ranges.any { (l, u) -> l <= i && i <= u } }
+    private fun part1(ranges: List<LongRange>, items: List<Long>) =
+        items.count { item -> ranges.any { range -> item in range } }
 
-    private fun part2(ranges: List<Pair<Long, Long>>) =
+    private fun part2(ranges: List<LongRange>): Long =
         ranges
-            .fold(mutableListOf<Pair<Long, Long>>()) { ranges, current ->
-              var (low, high) = current
+            .sortedBy { it.first }
+            .fold(emptyList<LongRange>()) { ranges, next ->
+              val prev = ranges.lastOrNull() ?: return@fold listOf(next)
 
-              ranges.removeAll { low <= it.first && high >= it.second }
-
-              val lowIdx = ranges.indexOfFirst { it.first <= low && low <= it.second }
-              if (lowIdx != -1) {
-                low = ranges[lowIdx].first
-                high = max(ranges[lowIdx].second, high)
-                ranges.removeAt(lowIdx)
+              when {
+                next.first > prev.last + 1 -> ranges.plusElement(next)
+                next.last > prev.last -> ranges.dropLast(1).plusElement(prev.first..next.last)
+                else -> ranges
               }
-
-              val highIdx = ranges.indexOfFirst { it.first <= high && high <= it.second }
-              if (highIdx != -1) {
-                low = min(ranges[highIdx].first, low)
-                high = ranges[highIdx].second
-                ranges.removeAt(highIdx)
-              }
-
-              ranges.add(low to high)
-
-              ranges
             }
-            .sumOf { (l, u) -> u - l + 1 }
+            .sumOf { it.last - it.first + 1 }
 
     fun solve() {
       val testInput = Path("src/Day05_Test.txt").readText().trim()
